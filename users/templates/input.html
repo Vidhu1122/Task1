@@ -3,127 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <title>User Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #667eea, #764ba2);
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        /* Centering the form */
+        body {
+            font-family: Arial, sans-serif;
             display: flex;
-            height: 100vh;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+            min-height: 100vh;
         }
-        .form-container {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 12px;
+
+        /* Form Container */
+        .container {
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             text-align: center;
-            color: #333;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        button {
-            width: 100%;
-            padding: 12px 10px;
-            margin: 10px 0;
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            font-size: 15px;
             outline: none;
+            transition: border-color 0.3s ease;
         }
+
         input:focus {
-            border-color: #764ba2;
-            box-shadow: 0 0 8px rgba(118, 75, 162, 0.3);
+            border-color: #007bff;
         }
-        button {
-            background-color: #667eea;
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #5a67d8;
-        }
+
         .error {
             color: red;
             font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        button[type="reset"] {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        button[type="reset"]:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive for mobile */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
         }
     </style>
-    <script>
-        function validateForm() {
-            let name = document.forms["userForm"]["full_name"].value.trim();
-            let mobile = document.forms["userForm"]["mobile_number"].value.trim();
-            let email = document.forms["userForm"]["email"].value.trim();
-            let password = document.forms["userForm"]["password"].value.trim();
-
-            const nameRegex = /^[A-Za-z ]+$/;
-            const mobileRegex = /^\d{10}$/;
-            const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
-            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
-
-            let errors = [];
-
-            if (!nameRegex.test(name)) {
-                errors.push("Name must contain only letters and spaces.");
-            }
-
-            if (!mobileRegex.test(mobile)) {
-                errors.push("Mobile number must be exactly 10 digits.");
-            }
-
-            if (!emailRegex.test(email)) {
-                errors.push("Invalid email format.");
-            }
-
-            if (!passwordRegex.test(password)) {
-                errors.push("Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.");
-            }
-
-            const errorContainer = document.getElementById("error-messages");
-            errorContainer.innerHTML = "";
-            if (errors.length > 0) {
-                errors.forEach(msg => {
-                    let p = document.createElement("p");
-                    p.className = "error";
-                    p.innerText = msg;
-                    errorContainer.appendChild(p);
-                });
-                return false;
-            }
-
-            return true;
-        }
-    </script>
 </head>
 <body>
-    <div class="form-container">
-        <h2>User Registration</h2>
-        <div id="error-messages">
-            {% if messages %}
-                {% for message in messages %}
-                    <p class="error">{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        </div>
-        <form name="userForm" method="POST" onsubmit="return validateForm()">
+    <div class="container">
+        <h2>Register</h2>
+
+        <form method="POST" name="userForm" onsubmit="return validateForm()">
             {% csrf_token %}
-            <input type="text" name="full_name" placeholder="Full Name" required>
-            <input type="text" name="mobile_number" placeholder="Mobile Number" required>
-            <input type="email" name="email" placeholder="Email Address" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Register</button>
+
+            <label for="full_name">Full Name</label>
+            <input type="text" name="full_name" id="full_name" placeholder="Enter your full name" required pattern="[A-Za-z ]+" title="Only letters and spaces allowed">
+
+            <label for="mobile_number">Mobile Number</label>
+            <input type="tel" name="mobile_number" id="mobile_number" placeholder="Enter 10-digit mobile number" required pattern="\d{10}" title="Enter a 10-digit number">
+
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Enter your email" required title="Enter a valid email address">
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="At least 8 characters, 1 uppercase, 1 number, 1 special char" required
+                   pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$"
+                   title="At least 8 characters, 1 uppercase letter, 1 number, and 1 special character">
+
+            <div class="button-group">
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
         </form>
     </div>
 </body>
 </html>
-<!-- This template provides a user registration form with validation. It includes fields for full name, mobile number, email, and password. -->
-<!-- The form uses JavaScript for client-side validation, ensuring that the inputs meet specific criteria before submission. -->
